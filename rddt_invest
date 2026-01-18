@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit (RDDT) 投資分析：AI 數據資產價值再發現</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Font */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f5f5f4; /* Stone 100 */
+            color: #1c1917; /* Stone 900 */
+            overflow-x: hidden;
+        }
+
+        /* --- Chart Container Styling --- */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px; /* Increased width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+
+        @media (min-width: 1024px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        /* ------------------------------------------ */
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Minimal Navigation Styling */
+        .nav-item {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding-left: 1rem;
+            cursor: pointer;
+            border-left: 2px solid transparent;
+            color: #a8a29e; /* Stone 400 */
+            font-size: 0.875rem; /* text-sm */
+            opacity: 0.6;
+        }
+
+        /* Active State: Big, Bold, Orange */
+        .nav-item.active {
+            color: #ff4500; /* Reddit Orange */
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 700;
+            opacity: 1;
+            padding-left: 1.5rem;
+            border-left-color: #ff4500;
+        }
+        
+        .nav-item:hover:not(.active) {
+            color: #57534e; /* Stone 600 */
+            opacity: 1;
+        }
+
+        .card-hover {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+        
+        /* Hide scrollbar for cleaner look if desired, but keeping default for usability */
+    </style>
+</head>
+<body class="text-stone-800">
+
+    <!-- Mobile Header (Minimal) - Only visible on small screens -->
+    <header class="md:hidden fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-stone-200 z-50 h-14 flex items-center justify-between px-4">
+        <div class="flex items-center gap-2">
+            <span class="text-xl text-[#FF4500]">●</span>
+            <h1 class="font-bold text-stone-900">RDDT 分析</h1>
+        </div>
+        <div class="text-sm font-bold text-stone-900">~$244</div>
+    </header>
+
+    <!-- Floating Navigation (Desktop Only) -->
+    <!-- Fixed position on the left, vertically centered -->
+    <nav class="hidden lg:flex fixed left-8 top-1/2 -translate-y-1/2 z-40 flex-col gap-6 w-48">
+        <div class="mb-4 pl-4 opacity-50">
+            <h1 class="font-black text-3xl tracking-tighter text-stone-300">RDDT</h1>
+        </div>
+        
+        <div onclick="scrollToSection('overview')" id="nav-overview" class="nav-item active">
+            投資摘要
+        </div>
+        <div onclick="scrollToSection('financials')" id="nav-financials" class="nav-item">
+            財務引擎
+        </div>
+        <div onclick="scrollToSection('ai-moat')" id="nav-ai-moat" class="nav-item">
+            數據護城河
+        </div>
+        <div onclick="scrollToSection('strategy')" id="nav-strategy" class="nav-item">
+            戰略 SWOT
+        </div>
+        <div onclick="scrollToSection('valuation')" id="nav-valuation" class="nav-item">
+            估值與配置
+        </div>
+
+        <!-- Live Stock Price Indicator -->
+        <div class="mt-8 pl-4 border-t border-stone-200 pt-4">
+            <div class="text-xs text-stone-400 font-bold uppercase">Live Price</div>
+            <div class="text-xl font-bold text-stone-800">~$244.00</div>
+            <div class="text-xs text-green-500 font-bold">▲ >400%</div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <!-- Added left padding on large screens to accommodate the floating nav -->
+    <main class="w-full lg:pl-48 relative" id="main-scroll">
+        
+        <!-- SECTION 1: OVERVIEW -->
+        <section id="overview" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target fade-in">
+            <div class="mb-12">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-[#FF4500] text-white text-xs font-bold px-3 py-1 rounded-full">Strong Buy</span>
+                    <span class="text-stone-400 text-sm font-medium">2026 投資展望</span>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-black text-stone-900 tracking-tight leading-tight">
+                    從社群廣場<br>到 <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FF4500] to-orange-600">AI 數據金礦</span>
+                </h2>
+                <p class="text-lg md:text-xl text-stone-500 mt-6 max-w-3xl leading-relaxed">
+                    Reddit 已超越傳統社群平台定義。它不僅是討論區，更是全球 AI 模型訓練不可或缺的「基礎設施」。稀缺的數據資產與雙重變現引擎，正推動其估值重構。
+                </p>
+            </div>
+
+            <!-- Metric Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 card-hover">
+                    <p class="text-sm text-stone-500 font-medium">投資評級</p>
+                    <p class="text-3xl font-bold text-[#FF4500] mt-2">買入</p>
+                    <p class="text-xs text-stone-400 mt-1">積極成長型資產</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 card-hover">
+                    <p class="text-sm text-stone-500 font-medium">2025 營收成長</p>
+                    <p class="text-3xl font-bold text-stone-800 mt-2">+63%</p>
+                    <p class="text-xs text-green-600 mt-1">年營收達 $21.2 億</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 card-hover">
+                    <p class="text-sm text-stone-500 font-medium">獲利狀態</p>
+                    <p class="text-3xl font-bold text-stone-800 mt-2">轉虧為盈</p>
+                    <p class="text-xs text-stone-400 mt-1">EPS $2.20</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 card-hover">
+                    <p class="text-sm text-stone-500 font-medium">AI 數據合約</p>
+                    <p class="text-3xl font-bold text-stone-800 mt-2">$1.3 億+</p>
+                    <p class="text-xs text-stone-400 mt-1">來自 Google & OpenAI</p>
+                </div>
+            </div>
+
+            <!-- The Analogy Visual -->
+            <div class="bg-white rounded-3xl shadow-lg shadow-stone-200/50 border border-stone-100 overflow-hidden flex flex-col md:flex-row">
+                <div class="p-8 md:p-12 md:w-1/2 bg-stone-50 border-b md:border-b-0 md:border-r border-stone-100">
+                    <div class="text-5xl mb-6 opacity-80 grayscale">🏙️</div>
+                    <h4 class="font-bold text-stone-900 text-2xl mb-3">過去：商業廣場</h4>
+                    <p class="text-stone-600 leading-relaxed">
+                        如同 Meta 或 TikTok。依靠人流出租廣告看板。內容多為生活碎片，對 AI 訓練價值較低。
+                    </p>
+                </div>
+                <div class="p-8 md:p-12 md:w-1/2 bg-gradient-to-br from-[#fff7ed] to-white relative">
+                    <div class="absolute top-0 right-0 p-4">
+                        <span class="bg-[#FF4500] text-white text-xs font-bold px-2 py-1 rounded">核心價值</span>
+                    </div>
+                    <div class="text-5xl mb-6">📚</div>
+                    <h4 class="font-bold text-[#FF4500] text-2xl mb-3">現在：數字圖書館</h4>
+                    <p class="text-stone-600 leading-relaxed">
+                        Reddit 擁有 20 年人類對話邏輯。AI 公司必須「付費訂閱」這座圖書館來訓練模型。這是高毛利且具壟斷性的新業務。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: FINANCIALS -->
+        <section id="financials" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">財務成長引擎</h2>
+                <p class="text-stone-600 text-lg max-w-3xl">
+                    Reddit 已度過燒錢擴張階段。2025 年的「黃金交叉」標誌著商業模式正式跑通：營收持續爆發，EPS 強勢轉正。
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Combo Chart -->
+                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <div class="flex justify-between items-end mb-6">
+                        <h3 class="font-bold text-xl text-stone-800">營收與獲利趨勢</h3>
+                        <div class="flex gap-4 text-xs font-medium">
+                            <span class="flex items-center gap-2 text-stone-500"><span class="w-3 h-3 rounded-full bg-[#FF4500]"></span> 營收</span>
+                            <span class="flex items-center gap-2 text-stone-500"><span class="w-3 h-3 rounded-full bg-[#16a34a]"></span> EPS (淨利)</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Revenue Mix -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-xl text-stone-800 mb-6">營收結構</h3>
+                        <div class="flex justify-center mb-8">
+                            <div style="width: 200px; height: 200px; position: relative;">
+                                <canvas id="mixChart"></canvas>
+                                <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+                                    <span class="text-3xl font-bold text-stone-800">93%</span>
+                                    <span class="text-xs text-stone-400">廣告佔比</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 bg-stone-50 rounded-xl border border-stone-100">
+                            <div class="flex justify-between mb-1">
+                                <span class="font-bold text-stone-800">廣告收入</span>
+                                <span class="text-stone-400">穩健增長</span>
+                            </div>
+                            <div class="w-full bg-stone-200 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-stone-800 h-full w-[93%]"></div>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-orange-50 rounded-xl border border-orange-100">
+                            <div class="flex justify-between mb-1">
+                                <span class="font-bold text-[#FF4500]">數據授權</span>
+                                <span class="text-[#FF4500] font-bold">高毛利引擎</span>
+                            </div>
+                            <div class="w-full bg-orange-200 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-[#FF4500] h-full w-[7%]"></div>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-2">
+                                雖然佔比低，但幾乎是純利潤，對推動 EPS 至關重要。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: AI MOAT -->
+        <section id="ai-moat" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">AI 數據護城河</h2>
+                <p class="text-stone-600 text-lg max-w-3xl">
+                    Reddit 的價值在於「落差」。目前極低的 ARPU 代表巨大的成長天花板，而 AI 數據授權則開啟了全新的變現維度。
+                </p>
+            </div>
+
+            <!-- ARPU Chart -->
+            <div class="bg-stone-900 text-white p-8 md:p-12 rounded-3xl shadow-xl mb-12 relative overflow-hidden">
+                <div class="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">ARPU 落差：10 倍成長潛力</h3>
+                        <p class="text-stone-400 mb-8 leading-relaxed">
+                            Reddit 的每用戶收入僅 $9.04。相比 Google 的 $400+ 和 Meta 的 $70，即便只達到競爭對手的一小部分，也意味著股價的數倍成長。
+                        </p>
+                        <div class="flex gap-8">
+                            <div>
+                                <div class="text-3xl font-bold text-[#FF4500]">$9.04</div>
+                                <div class="text-xs text-stone-500 uppercase mt-1">Reddit ARPU</div>
+                            </div>
+                            <div>
+                                <div class="text-3xl font-bold text-stone-400">$70.00</div>
+                                <div class="text-xs text-stone-600 uppercase mt-1">Meta ARPU</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="arpuChart"></canvas>
+                    </div>
+                </div>
+                <!-- Background decoration -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-[#FF4500] opacity-10 blur-3xl rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Partnership Details -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl">🤖</div>
+                        <h3 class="font-bold text-xl text-stone-800">AI 數據合作</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-4 bg-stone-50 rounded-xl">
+                            <span class="font-bold text-stone-700">Google</span>
+                            <span class="font-bold text-[#FF4500]">$6,000 萬 / 年</span>
+                        </div>
+                        <div class="flex justify-between items-center p-4 bg-stone-50 rounded-xl">
+                            <span class="font-bold text-stone-700">OpenAI</span>
+                            <span class="font-bold text-[#FF4500]">$7,000 萬 / 年</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- International Expansion -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xl">🌍</div>
+                        <h3 class="font-bold text-xl text-stone-800">國際化擴張</h3>
+                    </div>
+                    <div class="flex items-baseline gap-3 mb-4">
+                        <span class="text-5xl font-black text-stone-900">+74%</span>
+                        <span class="text-stone-500 font-medium">國際業務年增率</span>
+                    </div>
+                    <p class="text-stone-600">
+                        利用 AI 自動翻譯，打破語言隔閡。Reddit 正迅速在非英語系國家（如法國、德國、巴西）獲取市佔率。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: STRATEGY (SWOT) -->
+        <section id="strategy" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">戰略分析 (SWOT)</h2>
+                <p class="text-stone-600 text-lg max-w-3xl">
+                    權衡風險與回報。Reddit 擁有獨特的數據優勢，但也面臨變現效率與市場波動的挑戰。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[500px]">
+                <!-- Strengths -->
+                <div class="group bg-white p-8 rounded-3xl shadow-sm border border-stone-100 hover:border-green-400 hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-2xl text-stone-800 group-hover:text-green-600">優勢 Strengths</h3>
+                        <span class="text-stone-200 text-4xl font-black group-hover:text-green-100">S</span>
+                    </div>
+                    <ul class="space-y-3 text-stone-600 flex-1">
+                        <li class="flex items-start gap-2"><span class="text-green-500 mt-1">✓</span> 稀缺的 20 年真實人類對話數據。</li>
+                        <li class="flex items-start gap-2"><span class="text-green-500 mt-1">✓</span> 廣告 + 高毛利數據授權雙引擎。</li>
+                        <li class="flex items-start gap-2"><span class="text-green-500 mt-1">✓</span> 去中心化社群護城河，難以複製。</li>
+                    </ul>
+                </div>
+
+                <!-- Weaknesses -->
+                <div class="group bg-white p-8 rounded-3xl shadow-sm border border-stone-100 hover:border-orange-400 hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-2xl text-stone-800 group-hover:text-orange-600">劣勢 Weaknesses</h3>
+                        <span class="text-stone-200 text-4xl font-black group-hover:text-orange-100">W</span>
+                    </div>
+                    <ul class="space-y-3 text-stone-600 flex-1">
+                        <li class="flex items-start gap-2"><span class="text-orange-400 mt-1">•</span> ARPU 僅 $9.04，變現效率極低。</li>
+                        <li class="flex items-start gap-2"><span class="text-orange-400 mt-1">•</span> Beta 2.25，股價波動劇烈。</li>
+                        <li class="flex items-start gap-2"><span class="text-orange-400 mt-1">•</span> 獲利紀錄短，需持續驗證。</li>
+                    </ul>
+                </div>
+
+                <!-- Opportunities -->
+                <div class="group bg-white p-8 rounded-3xl shadow-sm border border-stone-100 hover:border-blue-400 hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-2xl text-stone-800 group-hover:text-blue-600">機會 Opportunities</h3>
+                        <span class="text-stone-200 text-4xl font-black group-hover:text-blue-100">O</span>
+                    </div>
+                    <ul class="space-y-3 text-stone-600 flex-1">
+                        <li class="flex items-start gap-2"><span class="text-blue-500 mt-1">↗</span> 動態定價：授權費掛鉤 AI 使用量。</li>
+                        <li class="flex items-start gap-2"><span class="text-blue-500 mt-1">↗</span> 電商整合：挖掘 Amazon 外的 70% 流量。</li>
+                        <li class="flex items-start gap-2"><span class="text-blue-500 mt-1">↗</span> Reddit Answers 切入搜尋市場。</li>
+                    </ul>
+                </div>
+
+                <!-- Threats -->
+                <div class="group bg-white p-8 rounded-3xl shadow-sm border border-stone-100 hover:border-red-400 hover:shadow-md transition-all duration-300 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-2xl text-stone-800 group-hover:text-red-600">威脅 Threats</h3>
+                        <span class="text-stone-200 text-4xl font-black group-hover:text-red-100">T</span>
+                    </div>
+                    <ul class="space-y-3 text-stone-600 flex-1">
+                        <li class="flex items-start gap-2"><span class="text-red-400 mt-1">!</span> TikTok 搶奪用戶時間。</li>
+                        <li class="flex items-start gap-2"><span class="text-red-400 mt-1">!</span> 內容審查與各國監管壓力。</li>
+                        <li class="flex items-start gap-2"><span class="text-red-400 mt-1">!</span> AI 未來若不再依賴外部數據訓練？</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: VALUATION & ACTION -->
+        <section id="valuation" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target pb-32">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-stone-900 mb-4">長期估值與行動</h2>
+                <p class="text-stone-600 text-lg max-w-3xl">
+                    分析師看好 Reddit 至 2030 年的成長潛力。請根據您的風險承受度，使用下方的試算器規劃投資。
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Forecast Chart -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <h3 class="font-bold text-xl text-stone-800 mb-6">股價目標預測 (2026-2030)</h3>
+                    <div class="chart-container">
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                    <div class="flex justify-between mt-6 pt-6 border-t border-stone-100">
+                        <div>
+                            <div class="text-xs text-stone-400 uppercase font-bold">當前價格</div>
+                            <div class="text-xl font-bold text-stone-800">~$244</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-stone-400 uppercase font-bold">2030 樂觀目標</div>
+                            <div class="text-xl font-bold text-[#FF4500]">$753</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator -->
+                <div class="bg-stone-900 text-white p-8 rounded-3xl shadow-2xl flex flex-col justify-between relative overflow-hidden">
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="text-2xl">🧮</span>
+                            <h3 class="font-bold text-2xl">投資配置試算</h3>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-xs text-stone-400 mb-2 uppercase font-bold tracking-wider">總投資組合 (USD)</label>
+                                <input type="number" id="portfolioInput" placeholder="10000" class="w-full bg-stone-800 border border-stone-700 rounded-xl p-4 text-white text-lg focus:outline-none focus:border-[#FF4500] transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-stone-400 mb-2 uppercase font-bold tracking-wider">風險屬性</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="setRisk('conservative')" class="risk-btn p-3 rounded-lg border border-stone-700 hover:bg-stone-800 text-sm transition-all" data-value="conservative">保守型</button>
+                                    <button onclick="setRisk('balanced')" class="risk-btn p-3 rounded-lg border border-stone-700 hover:bg-stone-800 text-sm transition-all" data-value="balanced">穩健型</button>
+                                    <button onclick="setRisk('aggressive')" class="risk-btn p-3 rounded-lg bg-[#FF4500] border border-[#FF4500] text-white font-bold text-sm shadow-lg shadow-orange-900/50" data-value="aggressive">積極型</button>
+                                </div>
+                                <input type="hidden" id="riskInput" value="aggressive">
+                            </div>
+                            <button onclick="calculateAllocation()" class="w-full bg-white text-stone-900 hover:bg-stone-200 font-bold py-4 rounded-xl mt-4 transition-all transform active:scale-95 shadow-lg">
+                                計算建議配置
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="resultBox" class="relative z-10 mt-8 pt-8 border-t border-stone-800 hidden animate-pulse">
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-sm text-stone-400 mb-1">建議配置金額</p>
+                                <p class="text-4xl font-bold text-[#FF4500] tracking-tight" id="resultAmount">$0</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-stone-400 mb-1">佔比</p>
+                                <p class="text-2xl font-bold text-white" id="resultPercent">0%</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-stone-500 mt-4 bg-stone-800/50 p-3 rounded-lg">
+                            💡 由於 Beta 值高達 2.25，建議分 3-4 次進場以分散風險。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Navigation Scroll Spy Logic ---
+        const sections = document.querySelectorAll('.section-target');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Observer for Scroll Spy
+        const observerOptions = {
+            root: null,
+            rootMargin: '-30% 0px -60% 0px', // Active when section is in the middle-top
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Remove active from all
+                    navItems.forEach(item => item.classList.remove('active'));
+                    
+                    // Add active to current
+                    const id = entry.target.getAttribute('id');
+                    const activeItem = document.getElementById(`nav-${id}`);
+                    if (activeItem) {
+                        activeItem.classList.add('active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+
+        // --- Risk Calculator Logic ---
+        function setRisk(type) {
+            document.getElementById('riskInput').value = type;
+            // Visual feedback for buttons
+            document.querySelectorAll('.risk-btn').forEach(btn => {
+                btn.classList.remove('bg-[#FF4500]', 'border-[#FF4500]', 'text-white', 'font-bold', 'shadow-lg');
+                btn.classList.add('border-stone-700', 'hover:bg-stone-800');
+                if(btn.dataset.value === type) {
+                    btn.classList.add('bg-[#FF4500]', 'border-[#FF4500]', 'text-white', 'font-bold', 'shadow-lg');
+                    btn.classList.remove('border-stone-700', 'hover:bg-stone-800');
+                }
+            });
+        }
+
+        function calculateAllocation() {
+            const amount = parseFloat(document.getElementById('portfolioInput').value);
+            const risk = document.getElementById('riskInput').value;
+            const resultBox = document.getElementById('resultBox');
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('請輸入有效的投資金額');
+                return;
+            }
+
+            let pct = 0;
+            let range = "";
+
+            switch(risk) {
+                case 'conservative': pct = 0.02; range = "2-3%"; break;
+                case 'balanced': pct = 0.05; range = "5%"; break;
+                case 'aggressive': pct = 0.10; range = "5-10%"; break;
+            }
+
+            const recAmount = Math.floor(amount * pct);
+            
+            document.getElementById('resultAmount').innerText = '$' + recAmount.toLocaleString();
+            document.getElementById('resultPercent').innerText = range;
+            
+            resultBox.classList.remove('hidden');
+            resultBox.classList.remove('animate-pulse');
+            void resultBox.offsetWidth; // trigger reflow
+            resultBox.classList.add('animate-pulse');
+        }
+
+
+        // --- Charts Configuration ---
+        Chart.defaults.font.family = "'Noto Sans TC', sans-serif";
+        Chart.defaults.color = '#78716c';
+
+        // 1. Financial Chart
+        new Chart(document.getElementById('financialChart'), {
+            type: 'bar',
+            data: {
+                labels: ['2023', '2024', '2025 Q1', '2025 Q2', '2025 Q3', '2025 Total'],
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'EPS (每股盈餘)',
+                        data: [-1.5, -0.5, 0.1, 0.8, 0.8, 2.20],
+                        borderColor: '#16a34a',
+                        borderWidth: 3,
+                        yAxisID: 'y1',
+                        tension: 0.4,
+                        pointBackgroundColor: '#16a34a',
+                        pointRadius: 4
+                    },
+                    {
+                        type: 'bar',
+                        label: '營收 (億美元)',
+                        data: [8.04, 13.00, 4.00, 5.00, 5.85, 21.20],
+                        backgroundColor: '#FF4500',
+                        borderRadius: 6,
+                        yAxisID: 'y'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(28, 25, 23, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#d6d3d1'
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { 
+                        position: 'left',
+                        grid: { display: false },
+                        ticks: { callback: v => '$' + v }
+                    },
+                    y1: { 
+                        position: 'right',
+                        grid: { color: '#f5f5f4' },
+                        ticks: { callback: v => '$' + v }
+                    }
+                }
+            }
+        });
+
+        // 2. Mix Chart (Donut)
+        new Chart(document.getElementById('mixChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['廣告', '數據授權'],
+                datasets: [{
+                    data: [93, 7],
+                    backgroundColor: ['#1c1917', '#FF4500'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '80%',
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // 3. ARPU Chart (Horizontal Bar)
+        new Chart(document.getElementById('arpuChart'), {
+            type: 'bar',
+            indexAxis: 'y',
+            data: {
+                labels: ['Reddit', 'Meta', 'Google'],
+                datasets: [{
+                    label: 'ARPU',
+                    data: [9.04, 70, 400],
+                    backgroundColor: ['#FF4500', '#57534e', '#57534e'],
+                    borderRadius: 6,
+                    barPercentage: 0.5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { 
+                        grid: { display: false },
+                        ticks: { 
+                            font: { size: 14, weight: 'bold' },
+                            color: '#e7e5e4'
+                        }
+                    }
+                }
+            }
+        });
+
+        // 4. Forecast Chart (Line)
+        new Chart(document.getElementById('forecastChart'), {
+            type: 'line',
+            data: {
+                labels: ['2026', '2027', '2028', '2029', '2030'],
+                datasets: [
+                    {
+                        label: '樂觀預測',
+                        data: [244, 325, 450, 580, 753],
+                        borderColor: '#FF4500',
+                        backgroundColor: 'rgba(255, 69, 0, 0.05)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    },
+                    {
+                        label: '平均預測',
+                        data: [244, 280, 350, 420, 515],
+                        borderColor: '#a8a29e',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', align: 'end' },
+                    tooltip: {
+                        backgroundColor: 'rgba(28, 25, 23, 0.9)',
+                        callbacks: { label: c => c.dataset.label + ': $' + c.raw }
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { 
+                        grid: { color: '#f5f5f4' },
+                        ticks: { callback: v => '$' + v }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
