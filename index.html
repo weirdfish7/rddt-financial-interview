@@ -6,6 +6,8 @@
     <title>Reddit (RDDT) 投資分析：AI 數據資產價值再發現</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Added FontAwesome for Brand Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         /* Custom Font */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
@@ -80,7 +82,14 @@
         /* Smooth Scroll */
         html { scroll-behavior: smooth; }
         
-        /* Hide scrollbar for cleaner look if desired, but keeping default for usability */
+        /* Alert Pulse Animation */
+        @keyframes pulse-red {
+            0%, 100% { background-color: rgba(254, 226, 226, 0.5); }
+            50% { background-color: rgba(254, 226, 226, 1); }
+        }
+        .alert-pulse {
+            animation: pulse-red 2s infinite;
+        }
     </style>
 </head>
 <body class="text-stone-800">
@@ -88,17 +97,18 @@
     <!-- Mobile Header (Minimal) - Only visible on small screens -->
     <header class="md:hidden fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-stone-200 z-50 h-14 flex items-center justify-between px-4">
         <div class="flex items-center gap-2">
-            <span class="text-xl text-[#FF4500]">●</span>
+            <i class="fa-brands fa-reddit text-[#FF4500] text-2xl"></i>
             <h1 class="font-bold text-stone-900">RDDT 分析</h1>
         </div>
-        <div class="text-sm font-bold text-stone-900">~$244</div>
+        <div class="text-sm font-bold text-stone-900">$231.25</div>
     </header>
 
     <!-- Floating Navigation (Desktop Only) -->
     <!-- Fixed position on the left, vertically centered -->
     <nav class="hidden lg:flex fixed left-8 top-1/2 -translate-y-1/2 z-40 flex-col gap-6 w-48">
-        <div class="mb-4 pl-4 opacity-50">
-            <h1 class="font-black text-3xl tracking-tighter text-stone-300">RDDT</h1>
+        <div class="mb-4 pl-4 flex items-center gap-2 opacity-80">
+            <i class="fa-brands fa-reddit text-[#FF4500] text-4xl"></i>
+            <h1 class="font-black text-3xl tracking-tighter text-stone-800">RDDT</h1>
         </div>
         
         <div onclick="scrollToSection('overview')" id="nav-overview" class="nav-item active">
@@ -120,8 +130,11 @@
         <!-- Live Stock Price Indicator -->
         <div class="mt-8 pl-4 border-t border-stone-200 pt-4">
             <div class="text-xs text-stone-400 font-bold uppercase">Live Price</div>
-            <div class="text-xl font-bold text-stone-800">~$244.00</div>
-            <div class="text-xs text-green-500 font-bold">▲ >400%</div>
+            <div class="text-xl font-bold text-stone-800">$231.25</div>
+            <div class="flex items-center gap-2 text-xs">
+                <span class="text-green-500 font-bold">▲ 392% IPO</span>
+                <span class="text-red-500 font-bold bg-red-50 px-1 rounded">▼ 9% 1D</span>
+            </div>
         </div>
     </nav>
 
@@ -131,17 +144,30 @@
         
         <!-- SECTION 1: OVERVIEW -->
         <section id="overview" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target fade-in">
-            <div class="mb-12">
+            <div class="mb-8">
                 <div class="flex items-center gap-3 mb-4">
-                    <span class="bg-[#FF4500] text-white text-xs font-bold px-3 py-1 rounded-full">Strong Buy</span>
+                    <span class="bg-[#FF4500] text-white text-xs font-bold px-3 py-1 rounded-full"><i class="fa-solid fa-bullhorn mr-1"></i> Strong Buy</span>
                     <span class="text-stone-400 text-sm font-medium">2026 投資展望</span>
                 </div>
                 <h2 class="text-4xl md:text-6xl font-black text-stone-900 tracking-tight leading-tight">
                     從社群廣場<br>到 <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FF4500] to-orange-600">AI 數據金礦</span>
                 </h2>
                 <p class="text-lg md:text-xl text-stone-500 mt-6 max-w-3xl leading-relaxed">
-                    Reddit 已超越傳統社群平台定義。它不僅是討論區，更是全球 AI 模型訓練不可或缺的「基礎設施」。稀缺的數據資產與雙重變現引擎，正推動其估值重構。
+                    Reddit (RDDT) 已超越傳統社群平台定義。它不僅是討論區，更是全球 AI 模型訓練不可或缺的「基礎設施」。稀缺的數據資產與雙重變現引擎，正推動其估值重構。
                 </p>
+            </div>
+
+            <!-- News Alert Banner -->
+            <div class="mb-12 bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg shadow-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-red-800 text-sm mb-1">市場快訊：競爭對手回歸引發波動 (2026/01/15)</h4>
+                        <p class="text-sm text-red-700 leading-relaxed">
+                            昔日競爭對手 <strong>Digg</strong> 宣布重返社群媒體市場，並成功挖角 Reddit 資深板主擔任顧問。市場擔憂社群護城河受損，導致 RDDT 股價單日重挫 <span class="font-bold">9%</span> 至 $231.25。建議投資人關注後續用戶留存數據，視此回調為長期佈局機會。
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <!-- Metric Cards -->
@@ -171,7 +197,7 @@
             <!-- The Analogy Visual -->
             <div class="bg-white rounded-3xl shadow-lg shadow-stone-200/50 border border-stone-100 overflow-hidden flex flex-col md:flex-row">
                 <div class="p-8 md:p-12 md:w-1/2 bg-stone-50 border-b md:border-b-0 md:border-r border-stone-100">
-                    <div class="text-5xl mb-6 opacity-80 grayscale">🏙️</div>
+                    <div class="text-5xl mb-6 opacity-80 text-stone-400"><i class="fa-solid fa-city"></i></div>
                     <h4 class="font-bold text-stone-900 text-2xl mb-3">過去：商業廣場</h4>
                     <p class="text-stone-600 leading-relaxed">
                         如同 Meta 或 TikTok。依靠人流出租廣告看板。內容多為生活碎片，對 AI 訓練價值較低。
@@ -181,7 +207,7 @@
                     <div class="absolute top-0 right-0 p-4">
                         <span class="bg-[#FF4500] text-white text-xs font-bold px-2 py-1 rounded">核心價值</span>
                     </div>
-                    <div class="text-5xl mb-6">📚</div>
+                    <div class="text-5xl mb-6 text-[#FF4500]"><i class="fa-solid fa-book-open"></i></div>
                     <h4 class="font-bold text-[#FF4500] text-2xl mb-3">現在：數字圖書館</h4>
                     <p class="text-stone-600 leading-relaxed">
                         Reddit 擁有 20 年人類對話邏輯。AI 公司必須「付費訂閱」這座圖書館來訓練模型。這是高毛利且具壟斷性的新業務。
@@ -193,7 +219,7 @@
         <!-- SECTION 2: FINANCIALS -->
         <section id="financials" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target">
             <div class="mb-12">
-                <h2 class="text-4xl font-bold text-stone-900 mb-4">財務成長引擎</h2>
+                <h2 class="text-4xl font-bold text-stone-900 mb-4"><i class="fa-solid fa-chart-line mr-3 text-stone-300"></i>財務成長引擎</h2>
                 <p class="text-stone-600 text-lg max-w-3xl">
                     Reddit 已度過燒錢擴張階段。2025 年的「黃金交叉」標誌著商業模式正式跑通：營收持續爆發，EPS 強勢轉正。
                 </p>
@@ -259,7 +285,7 @@
         <!-- SECTION 3: AI MOAT -->
         <section id="ai-moat" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target">
             <div class="mb-12">
-                <h2 class="text-4xl font-bold text-stone-900 mb-4">AI 數據護城河</h2>
+                <h2 class="text-4xl font-bold text-stone-900 mb-4"><i class="fa-solid fa-database mr-3 text-stone-300"></i>AI 數據護城河</h2>
                 <p class="text-stone-600 text-lg max-w-3xl">
                     Reddit 的價值在於「落差」。目前極低的 ARPU 代表巨大的成長天花板，而 AI 數據授權則開啟了全新的變現維度。
                 </p>
@@ -296,7 +322,7 @@
                 <!-- Partnership Details -->
                 <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl">🤖</div>
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl"><i class="fa-solid fa-robot"></i></div>
                         <h3 class="font-bold text-xl text-stone-800">AI 數據合作</h3>
                     </div>
                     <div class="space-y-4">
@@ -314,7 +340,7 @@
                 <!-- International Expansion -->
                 <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xl">🌍</div>
+                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xl"><i class="fa-solid fa-earth-americas"></i></div>
                         <h3 class="font-bold text-xl text-stone-800">國際化擴張</h3>
                     </div>
                     <div class="flex items-baseline gap-3 mb-4">
@@ -331,7 +357,7 @@
         <!-- SECTION 4: STRATEGY (SWOT) -->
         <section id="strategy" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target">
             <div class="mb-12">
-                <h2 class="text-4xl font-bold text-stone-900 mb-4">戰略分析 (SWOT)</h2>
+                <h2 class="text-4xl font-bold text-stone-900 mb-4"><i class="fa-solid fa-chess mr-3 text-stone-300"></i>戰略分析 (SWOT)</h2>
                 <p class="text-stone-600 text-lg max-w-3xl">
                     權衡風險與回報。Reddit 擁有獨特的數據優勢，但也面臨變現效率與市場波動的挑戰。
                 </p>
@@ -384,6 +410,7 @@
                         <span class="text-stone-200 text-4xl font-black group-hover:text-red-100">T</span>
                     </div>
                     <ul class="space-y-3 text-stone-600 flex-1">
+                        <li class="flex items-start gap-2 font-bold text-red-600 bg-red-50 p-1 rounded"><span class="text-red-500 mt-1">!</span> NEW: Digg 回歸與挖角風險。</li>
                         <li class="flex items-start gap-2"><span class="text-red-400 mt-1">!</span> TikTok 搶奪用戶時間。</li>
                         <li class="flex items-start gap-2"><span class="text-red-400 mt-1">!</span> 內容審查與各國監管壓力。</li>
                         <li class="flex items-start gap-2"><span class="text-red-400 mt-1">!</span> AI 未來若不再依賴外部數據訓練？</li>
@@ -395,7 +422,7 @@
         <!-- SECTION 5: VALUATION & ACTION -->
         <section id="valuation" class="min-h-screen py-20 px-6 md:px-12 max-w-6xl mx-auto flex flex-col justify-center section-target pb-32">
             <div class="mb-12">
-                <h2 class="text-4xl font-bold text-stone-900 mb-4">長期估值與行動</h2>
+                <h2 class="text-4xl font-bold text-stone-900 mb-4"><i class="fa-solid fa-bullseye mr-3 text-stone-300"></i>長期估值與行動</h2>
                 <p class="text-stone-600 text-lg max-w-3xl">
                     分析師看好 Reddit 至 2030 年的成長潛力。請根據您的風險承受度，使用下方的試算器規劃投資。
                 </p>
@@ -411,7 +438,7 @@
                     <div class="flex justify-between mt-6 pt-6 border-t border-stone-100">
                         <div>
                             <div class="text-xs text-stone-400 uppercase font-bold">當前價格</div>
-                            <div class="text-xl font-bold text-stone-800">~$244</div>
+                            <div class="text-xl font-bold text-stone-800">$231.25</div>
                         </div>
                         <div class="text-right">
                             <div class="text-xs text-stone-400 uppercase font-bold">2030 樂觀目標</div>
@@ -424,7 +451,7 @@
                 <div class="bg-stone-900 text-white p-8 rounded-3xl shadow-2xl flex flex-col justify-between relative overflow-hidden">
                     <div class="relative z-10">
                         <div class="flex items-center gap-3 mb-6">
-                            <span class="text-2xl">🧮</span>
+                            <span class="text-2xl"><i class="fa-solid fa-calculator"></i></span>
                             <h3 class="font-bold text-2xl">投資配置試算</h3>
                         </div>
                         
@@ -674,7 +701,7 @@
                 datasets: [
                     {
                         label: '樂觀預測',
-                        data: [244, 325, 450, 580, 753],
+                        data: [231.25, 325, 450, 580, 753], /* Adjusted start point */
                         borderColor: '#FF4500',
                         backgroundColor: 'rgba(255, 69, 0, 0.05)',
                         fill: true,
@@ -683,7 +710,7 @@
                     },
                     {
                         label: '平均預測',
-                        data: [244, 280, 350, 420, 515],
+                        data: [231.25, 280, 350, 420, 515], /* Adjusted start point */
                         borderColor: '#a8a29e',
                         borderDash: [5, 5],
                         borderWidth: 2,
